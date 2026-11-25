@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cyber">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe — Ultimate Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Ambient Background Canvas -->
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+    <div class="arena-wrapper">
+        <!-- Top Header & Navigation -->
+        <header class="arena-header">
+            <div class="brand-container">
+                <div class="brand-logo" aria-hidden="true">
+                    <span class="logo-grid">
+                        <i></i><i></i><i></i><i></i>
+                    </span>
+                </div>
+                <div class="brand-text">
+                    <div class="title-row">
+                        <h1 class="arena-title">TIC TAC TOE</h1>
+                        <span class="arena-badge">ULTIMATE ARENA</span>
+                    </div>
+                    <p class="arena-subtitle">THE ULTIMATE STRATEGY ARENA</p>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <button id="sound-btn" class="ctrl-btn" title="Toggle Sound" aria-label="Toggle Sound">
+                    <svg class="sound-on-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                    <svg class="sound-off-icon hide" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                    <span class="ctrl-label">AUDIO</span>
+                </button>
+                <button id="theme-btn" class="ctrl-btn" title="Switch Theme (Cyber / Solar / Matrix)" aria-label="Switch Theme">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+                    </svg>
+                    <span class="ctrl-label" id="theme-name">THEME</span>
+                </button>
+                <button id="rules-btn" class="ctrl-btn" title="Game Rules & Guide" aria-label="Game Rules">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span class="ctrl-label">RULES</span>
+                </button>
+                <button id="reset-stats-btn" class="ctrl-btn" title="Reset Statistics" aria-label="Reset Statistics">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3v5h5M21 21v-5h-5M3.05 13A9 9 0 0 0 19 17.5M20.95 11A9 9 0 0 0 5 6.5"></path>
+                    </svg>
+                    <span class="ctrl-label">STATS</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mode & Difficulty Selection Bar -->
+        <nav class="mode-navigation" aria-label="Game Mode Selection">
+            <div class="mode-selector" role="radiogroup" aria-label="Game Mode">
+                <button class="mode-pill active" data-mode="pvp" role="radio" aria-checked="true">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                    <span>PLAYER VS PLAYER</span>
+                </button>
+                <button class="mode-pill" data-mode="ai" role="radio" aria-checked="false">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.38-1 1.72V7h4a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3h4V5.72A2 2 0 0 1 10 4a2 2 0 0 1 2-2zm-4 9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm8 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-6 5.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4z"/>
+                    </svg>
+                    <span>PLAYER VS AI</span>
+                </button>
+            </div>
+
+            <!-- AI Difficulty Selection (visible when AI mode is active) -->
+            <div id="ai-difficulty-bar" class="ai-difficulty-bar hide" role="radiogroup" aria-label="AI Difficulty">
+                <span class="diff-tag">DIFFICULTY:</span>
+                <button class="diff-pill" data-diff="easy" role="radio" aria-checked="false">
+                    <span class="diff-dot easy"></span>
+                    <span>EASY</span>
+                </button>
+                <button class="diff-pill active" data-diff="medium" role="radio" aria-checked="true">
+                    <span class="diff-dot medium"></span>
+                    <span>MEDIUM</span>
+                </button>
+                <button class="diff-pill" data-diff="impossible" role="radio" aria-checked="false">
+                    <span class="diff-dot impossible"></span>
+                    <span>IMPOSSIBLE</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Arena Display -->
+        <main class="arena-main">
+            <!-- Player Profiles and Score (Flanking Main Arena) -->
+            <section class="combatants-bar" aria-label="Player Profiles and Score">
+                <!-- Player X Card -->
+                <div class="player-card player-x active" id="player-x-card">
+                    <div class="player-glow"></div>
+                    <div class="player-avatar">
+                        <span class="avatar-icon">X</span>
+                        <div class="avatar-pulse"></div>
+                    </div>
+                    <div class="player-info">
+                        <div class="player-header-line">
+                            <span class="player-role" id="player-x-name">PLAYER X</span>
+                            <span class="player-tag">CYAN</span>
+                        </div>
+                        <div class="player-score-box">
+                            <span class="score-label">SCORE</span>
+                            <span class="score-number" id="score-x">0</span>
+                        </div>
+                    </div>
+                    <div class="turn-indicator-badge">TURN</div>
+                </div>
+
+                <!-- Arena Center VS Badge -->
+                <div class="arena-center-status">
+                    <div class="vs-badge">VS</div>
+                </div>
+
+                <!-- Player O / AI Card -->
+                <div class="player-card player-o" id="player-o-card">
+                    <div class="player-glow"></div>
+                    <div class="player-avatar">
+                        <span class="avatar-icon" id="player-o-icon">O</span>
+                        <div class="avatar-pulse"></div>
+                    </div>
+                    <div class="player-info">
+                        <div class="player-header-line">
+                            <span class="player-role" id="player-o-name">PLAYER O</span>
+                            <span class="player-tag">VIOLET</span>
+                        </div>
+                        <div class="player-score-box">
+                            <span class="score-label">SCORE</span>
+                            <span class="score-number" id="score-o">0</span>
+                        </div>
+                    </div>
+                    <div class="turn-indicator-badge">TURN</div>
+                </div>
+            </section>
+
+            <!-- Interactive Game Board Container (Visual Centerpiece) -->
+            <div class="container board-wrapper">
+                <div class="board-frame" id="board-frame">
+                    <!-- Corner Sci-Fi Accents -->
+                    <span class="corner corner-tl"></span>
+                    <span class="corner corner-tr"></span>
+                    <span class="corner corner-bl"></span>
+                    <span class="corner corner-br"></span>
+
+                    <!-- The 3x3 Game Board Grid -->
+                    <div class="game" id="board" role="grid" aria-label="Tic Tac Toe Board">
+                        <button class="box" data-index="0" role="gridcell" aria-label="Row 1 Column 1"></button>
+                        <button class="box" data-index="1" role="gridcell" aria-label="Row 1 Column 2"></button>
+                        <button class="box" data-index="2" role="gridcell" aria-label="Row 1 Column 3"></button>
+                        <button class="box" data-index="3" role="gridcell" aria-label="Row 2 Column 1"></button>
+                        <button class="box" data-index="4" role="gridcell" aria-label="Row 2 Column 2"></button>
+                        <button class="box" data-index="5" role="gridcell" aria-label="Row 2 Column 3"></button>
+                        <button class="box" data-index="6" role="gridcell" aria-label="Row 3 Column 1"></button>
+                        <button class="box" data-index="7" role="gridcell" aria-label="Row 3 Column 2"></button>
+                        <button class="box" data-index="8" role="gridcell" aria-label="Row 3 Column 3"></button>
+                    </div>
+
+                    <!-- SVG Winning Strike Line Layer (Positioned over board frame) -->
+                    <svg class="win-strike-svg" id="win-strike-svg" aria-hidden="true">
+                        <line id="win-strike-line" class="win-strike-line" x1="0" y1="0" x2="0" y2="0" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Current Turn Indicator (Positioned directly below the board) -->
+            <div class="turn-announcer-bar" id="turn-announcer" aria-live="polite">
+                <span class="turn-dot"></span>
+                <span class="turn-text" id="turn-text">PLAYER X'S TURN</span>
+            </div>
+
+            <!-- In-Game Action Bar (New Game, Restart, Undo) -->
+            <section class="game-action-bar" aria-label="Game Controls">
+                <button class="action-btn New" id="New" title="Start Fresh Match">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>NEW GAME</span>
+                </button>
+
+                <button class="action-btn reset-btn" id="reset-btn" title="Restart Current Match">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                    </svg>
+                    <span>RESTART</span>
+                </button>
+
+                <button class="action-btn" id="undo-btn" title="Undo Last Move">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10"></polyline>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    </svg>
+                    <span>UNDO</span>
+                </button>
+            </section>
+
+            <!-- Performance Metrics & Statistics Section -->
+            <section class="stats-dashboard" aria-label="Arena Statistics">
+                <div class="stat-card">
+                    <div class="stat-icon cyan">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="7"></circle>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-value" id="stat-x-wins">0</span>
+                        <span class="stat-label">X WINS</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon violet">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="7"></circle>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-value" id="stat-o-wins">0</span>
+                        <span class="stat-label">O / AI WINS</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon amber">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-value" id="stat-draws">0</span>
+                        <span class="stat-label">DRAWS</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon flame">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-value" id="stat-streak">0</span>
+                        <span class="stat-label">CURRENT STREAK</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Match History Drawer / Section -->
+            <section class="history-panel" aria-label="Recent Match History">
+                <div class="history-header">
+                    <div class="history-title-group">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <h3>RECENT ARENA MATCHES</h3>
+                    </div>
+                    <button id="clear-history-btn" class="clear-history-btn" title="Clear Match History">CLEAR LOG</button>
+                </div>
+                <div class="history-feed" id="history-feed">
+                    <p class="history-empty">No matches logged yet. Play your first arena showdown!</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Victory / Draw Celebration Modal (Preserving .msg-container, #msg, #New) -->
+    <div class="msg-container hide" id="msg-container" role="dialog" aria-modal="true" aria-labelledby="msg">
+        <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+        <div class="modal-card">
+            <div class="modal-glow" id="modal-glow"></div>
+            <div class="modal-badge-wrapper">
+                <div class="modal-trophy-icon" id="modal-trophy-icon">🏆</div>
+            </div>
+            <h2 id="msg" class="modal-title">Winner</h2>
+            <p id="msg-subtitle" class="modal-subtitle">A legendary tactical maneuver has concluded the showdown.</p>
+            
+            <div class="match-summary-stats" id="match-summary-stats">
+                <div class="summary-chip">
+                    <span class="chip-label">TURNS</span>
+                    <span class="chip-value" id="sum-turns">5</span>
+                </div>
+                <div class="summary-chip">
+                    <span class="chip-label">MODE</span>
+                    <span class="chip-value" id="sum-mode">PvP</span>
+                </div>
+                <div class="summary-chip">
+                    <span class="chip-label">STREAK</span>
+                    <span class="chip-value" id="sum-streak">1W</span>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn play-again-btn New" id="modal-play-again-btn">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>PLAY AGAIN</span>
+                </button>
+                <button class="modal-btn review-board-btn" id="modal-review-btn">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span>VIEW BOARD</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules & Guide Modal -->
+    <div class="rules-modal-overlay hide" id="rules-modal" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+        <div class="rules-modal-card">
+            <div class="rules-modal-header">
+                <h3 id="rules-title">ARENA COMBAT PROTOCOLS</h3>
+                <button id="close-rules-btn" class="close-btn" aria-label="Close Rules">&times;</button>
+            </div>
+            <div class="rules-content">
+                <div class="rule-item">
+                    <div class="rule-num">01</div>
+                    <div class="rule-desc">
+                        <strong>The Objective:</strong> Align 3 identical glyphs in a row (horizontal, vertical, or diagonal) across the 3×3 matrix to secure supremacy.
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-num">02</div>
+                    <div class="rule-desc">
+                        <strong>Glyph Identity:</strong> Player X commands electric cyan glyphs. Player O / AI commands vivid violet glyphs.
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-num">03</div>
+                    <div class="rule-desc">
+                        <strong>Artificial Intelligence:</strong>
+                        <ul>
+                            <li><strong>Recruit (Easy):</strong> Erratic and testing patterns.</li>
+                            <li><strong>Veteran (Medium):</strong> Tactical defense and opportunism.</li>
+                            <li><strong>Cybermind (Impossible):</strong> Optimal Minimax algorithm. Unbeatable execution.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="rule-item">
+                    <div class="rule-num">04</div>
+                    <div class="rule-desc">
+                        <strong>Tactical Controls:</strong> Use <em>UNDO</em> to retract your move, <em>RESTART</em> to re-engage the board, or toggle audio and themes in the header.
+                    </div>
+                </div>
+            </div>
+            <button class="rules-close-action" id="rules-ack-btn">ENTER THE ARENA</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
